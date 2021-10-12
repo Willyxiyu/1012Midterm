@@ -7,10 +7,13 @@
 
 import Foundation
 import UIKit
+import FirebaseFirestore
 
 class PublishArticlePageViewController: UIViewController {
     
     let editView = UIView()
+    var db: Firestore!
+    
     
     
     override func viewDidLoad() {
@@ -19,10 +22,12 @@ class PublishArticlePageViewController: UIViewController {
         title = "Publisher"
         editView.backgroundColor = .white
         setupEditView()
-        setupInputTitleLabel()
-        setupInputCategoryLabel()
-        setupInputContentLabel()
+        setupInputTitleTextField()
+        setupInputCategoryTextField()
+        setupInputContentTextField()
         setupInputbutton()
+        
+        db = Firestore.firestore()
         
     }
     
@@ -40,34 +45,37 @@ class PublishArticlePageViewController: UIViewController {
     
     // MARK: - Properties
     
-    lazy var inputTitleLabel: UILabel = {
-        let inputTitleLabel = UILabel()
-        inputTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        inputTitleLabel.font = UIFont.systemFont(ofSize: 18)
-        inputTitleLabel.textColor = .black
-        inputTitleLabel.layer.borderColor = UIColor.lightGray.cgColor
-        inputTitleLabel.layer.borderWidth = 1
-        return inputTitleLabel
+    lazy var inputTitleTextField: UITextField = {
+        let inputTitleTextField = UITextField()
+        inputTitleTextField.translatesAutoresizingMaskIntoConstraints = false
+        inputTitleTextField.font = UIFont.systemFont(ofSize: 18)
+        inputTitleTextField.textColor = .black
+        inputTitleTextField.layer.borderColor = UIColor.lightGray.cgColor
+        inputTitleTextField.layer.borderWidth = 1
+        inputTitleTextField.placeholder = "input title"
+        return inputTitleTextField
     }()
     
-    lazy var inputCategoryLabel: UILabel = {
-        let inputCategoryLabel = UILabel()
-        inputCategoryLabel.translatesAutoresizingMaskIntoConstraints = false
-        inputCategoryLabel.font = UIFont.systemFont(ofSize: 18)
-        inputCategoryLabel.textColor = .black
-        inputCategoryLabel.layer.borderColor = UIColor.lightGray.cgColor
-        inputCategoryLabel.layer.borderWidth = 1
-        return inputCategoryLabel
+    lazy var inputCategoryTextField: UITextField = {
+        let inputCategoryTextField = UITextField()
+        inputCategoryTextField.translatesAutoresizingMaskIntoConstraints = false
+        inputCategoryTextField.font = UIFont.systemFont(ofSize: 18)
+        inputCategoryTextField.textColor = .black
+        inputCategoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+        inputCategoryTextField.layer.borderWidth = 1
+        inputCategoryTextField.placeholder = "input category"
+        return inputCategoryTextField
     }()
     
-    lazy var inputContentLabel: UILabel = {
-        let inputContentLabel = UILabel()
-        inputContentLabel.translatesAutoresizingMaskIntoConstraints = false
-        inputContentLabel.font = UIFont.systemFont(ofSize: 18)
-        inputContentLabel.textColor = .black
-        inputContentLabel.layer.borderColor = UIColor.lightGray.cgColor
-        inputContentLabel.layer.borderWidth = 1
-        return inputContentLabel
+    lazy var inputContentTextField: UITextField = {
+        let inputContentTextField = UITextField()
+        inputContentTextField.translatesAutoresizingMaskIntoConstraints = false
+        inputContentTextField.font = UIFont.systemFont(ofSize: 18)
+        inputContentTextField.textColor = .black
+        inputContentTextField.layer.borderColor = UIColor.lightGray.cgColor
+        inputContentTextField.layer.borderWidth = 1
+        inputContentTextField.placeholder = "input content"
+        return inputContentTextField
     }()
     
     
@@ -84,35 +92,37 @@ class PublishArticlePageViewController: UIViewController {
     }()
     
     @objc func send() {
+        addData()
+        setupInputTitleTextField()
         navigationController?.popViewController(animated: true)
     }
     
-    private func setupInputTitleLabel() {
-        editView.addSubview(inputTitleLabel)
+    private func setupInputTitleTextField() {
+        editView.addSubview(inputTitleTextField)
         NSLayoutConstraint.activate([
-            inputTitleLabel.topAnchor.constraint(equalTo: editView.topAnchor, constant: 4),
-            inputTitleLabel.leadingAnchor.constraint(equalTo: editView.leadingAnchor, constant: 4),
-            inputTitleLabel.trailingAnchor.constraint(equalTo: editView.trailingAnchor, constant: -4),
-            inputTitleLabel.heightAnchor.constraint(equalTo: editView.heightAnchor, multiplier: 0.08)
+            inputTitleTextField.topAnchor.constraint(equalTo: editView.topAnchor, constant: 4),
+            inputTitleTextField.leadingAnchor.constraint(equalTo: editView.leadingAnchor, constant: 4),
+            inputTitleTextField.trailingAnchor.constraint(equalTo: editView.trailingAnchor, constant: -4),
+            inputTitleTextField.heightAnchor.constraint(equalTo: editView.heightAnchor, multiplier: 0.08)
         ])
     }
     
-    private func setupInputCategoryLabel() {
-        editView.addSubview(inputCategoryLabel)
+    private func setupInputCategoryTextField() {
+        editView.addSubview(inputCategoryTextField)
         NSLayoutConstraint.activate([
-            inputCategoryLabel.topAnchor.constraint(equalTo: inputTitleLabel.bottomAnchor, constant: 4),
-            inputCategoryLabel.leadingAnchor.constraint(equalTo: editView.leadingAnchor, constant: 4),
-            inputCategoryLabel.trailingAnchor.constraint(equalTo: editView.trailingAnchor, constant: -4),
-            inputCategoryLabel.heightAnchor.constraint(equalTo: editView.heightAnchor, multiplier: 0.08)
+            inputCategoryTextField.topAnchor.constraint(equalTo: inputTitleTextField.bottomAnchor, constant: 4),
+            inputCategoryTextField.leadingAnchor.constraint(equalTo: editView.leadingAnchor, constant: 4),
+            inputCategoryTextField.trailingAnchor.constraint(equalTo: editView.trailingAnchor, constant: -4),
+            inputCategoryTextField.heightAnchor.constraint(equalTo: editView.heightAnchor, multiplier: 0.08)
         ])
     }
     
-    private func setupInputContentLabel() {
-        editView.addSubview(inputContentLabel)
+    private func setupInputContentTextField() {
+        editView.addSubview(inputContentTextField)
         NSLayoutConstraint.activate([
-            inputContentLabel.topAnchor.constraint(equalTo: inputCategoryLabel.bottomAnchor, constant: 4),
-            inputContentLabel.leadingAnchor.constraint(equalTo: editView.leadingAnchor, constant: 4),
-            inputContentLabel.trailingAnchor.constraint(equalTo: editView.trailingAnchor, constant: -4)
+            inputContentTextField.topAnchor.constraint(equalTo: inputCategoryTextField.bottomAnchor, constant: 4),
+            inputContentTextField.leadingAnchor.constraint(equalTo: editView.leadingAnchor, constant: 4),
+            inputContentTextField.trailingAnchor.constraint(equalTo: editView.trailingAnchor, constant: -4)
         ])
     }
     
@@ -122,9 +132,26 @@ class PublishArticlePageViewController: UIViewController {
             button.bottomAnchor.constraint(equalTo: editView.bottomAnchor, constant: -4),
             button.leadingAnchor.constraint(equalTo: editView.leadingAnchor, constant: 4),
             button.trailingAnchor.constraint(equalTo: editView.trailingAnchor, constant: -4),
-            button.topAnchor.constraint(equalTo: inputContentLabel.bottomAnchor, constant: 4),
+            button.topAnchor.constraint(equalTo: inputContentTextField.bottomAnchor, constant: 4),
             button.heightAnchor.constraint(equalTo: editView.heightAnchor, multiplier: 0.1)
         ])
     }
+    
+    func addData() {
+    let articles = Firestore.firestore().collection("articles")
+    let document = articles.document()
+    let data: [String: Any] = [
+    "email": "wayne@school.appworks.tw",
+//    "id": "waynechen323",
+    "name": "AKA小安老師",
+    "title": "IU「亂穿」竟美出新境界！笑稱自己品味奇怪　網笑：靠顏值撐住女神氣場",
+    "content": "南韓歌手IU（李知恩）無論在歌唱方面或是近期的戲劇作品都有亮眼的成績，但俗話說人無完美、美玉微瑕，曾再跟工作人員的互動影片中坦言自己品味很奇怪，近日在IG上分享了宛如「媽媽們青春時代的玉女歌手」超復古穿搭造型，卻意外美出新境界。",
+    "createdTime": NSDate().timeIntervalSince1970,
+    "id": document.documentID,
+    "category": "Beauty"
+    ]
+    document.setData(data)
+    }
+    
     
 }
